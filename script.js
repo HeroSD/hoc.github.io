@@ -14,14 +14,25 @@ function startGame(mode) {
 
 function startTimer() {
     clearInterval(timerInterval);
-    timeLeft = 10;
-    document.getElementById('timer').innerText = `Thời gian: ${timeLeft}s`;
+    
+    // Nếu là chế độ điền chữ (fill), thời gian là 20s, nếu là trắc nghiệm (quiz) thì 10s
+    timeLeft = (gameMode === 'fill') ? 20 : 10; 
+    
+    const timerDisplay = document.getElementById('timer');
+    timerDisplay.innerText = `Thời gian: ${timeLeft}s`;
+    
     timerInterval = setInterval(() => {
         timeLeft--;
-        document.getElementById('timer').innerText = `Thời gian: ${timeLeft}s`;
+        timerDisplay.innerText = `Thời gian: ${timeLeft}s`;
+        
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
-            checkAnswer(null);
+            // Tự động kiểm tra đáp án khi hết giờ
+            if (gameMode === 'quiz') {
+                checkAnswer(null); // Trắc nghiệm: truyền null để báo sai
+            } else {
+                checkInput(); // Điền chữ: gọi hàm kiểm tra ô input
+            }
         }
     }, 1000);
 }
