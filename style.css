@@ -32,3 +32,29 @@ input { width: 90%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; 
     height: auto; /* Tự động co giãn theo chiều rộng */
     max-height: 250px;
 }
+
+/* Thêm hiệu ứng con trỏ để người dùng biết ảnh có thể nhấn */
+#herb-image {
+    cursor: zoom-in;
+    transition: transform 0.3s ease; /* Tạo hiệu ứng mượt mà */
+}
+
+/* Class để phóng to ảnh */
+.zoomed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8); /* Nền tối xung quanh */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.zoomed img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 0; /* Ảnh to không cần bo góc */
+}
