@@ -4,35 +4,30 @@ let totalQuestions = 0;
 let timeLeft;
 let timerInterval;
 
-// Hàm khởi tạo đồng hồ
 function startTimer() {
-    timeLeft = 10; 
+    clearInterval(timerInterval);
+    timeLeft = 10;
     const timerDisplay = document.getElementById('timer');
-    if (timerDisplay) timerDisplay.innerText = `Thời gian: ${timeLeft}s`;
+    timerDisplay.innerText = `Thời gian: ${timeLeft}s`;
     
     timerInterval = setInterval(() => {
         timeLeft--;
-        if (timerDisplay) timerDisplay.innerText = `Thời gian: ${timeLeft}s`;
-        
+        timerDisplay.innerText = `Thời gian: ${timeLeft}s`;
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
-            checkAnswer(null); // Hết giờ thì coi như chọn sai (null)
+            checkAnswer(null);
         }
     }, 1000);
 }
 
 function nextQuestion() {
-    clearInterval(timerInterval); // Dừng đồng hồ cũ
-    startTimer(); // Chạy đồng hồ mới cho câu hỏi tiếp theo
+    clearInterval(timerInterval);
+    startTimer();
     
-    // 1. Chọn ngẫu nhiên 1 vị thuốc
     currentHerb = herbsData[Math.floor(Math.random() * herbsData.length)];
-    
-    // 2. Cập nhật hình ảnh
     document.getElementById('herb-image').src = currentHerb.image;
     document.getElementById('feedback').className = 'hidden';
     
-    // 3. Tạo 4 đáp án
     let options = [currentHerb.name];
     while(options.length < 4) {
         let rand = herbsData[Math.floor(Math.random() * herbsData.length)].name;
@@ -40,7 +35,6 @@ function nextQuestion() {
     }
     options.sort(() => Math.random() - 0.5);
     
-    // 4. Hiển thị đáp án
     const grid = document.getElementById('options-grid');
     grid.innerHTML = "";
     options.forEach(opt => {
@@ -52,22 +46,27 @@ function nextQuestion() {
 }
 
 function checkAnswer(selected) {
-    clearInterval(timerInterval); // Dừng đồng hồ khi đã chọn
+    clearInterval(timerInterval);
     totalQuestions++;
     
-    const fb = document.getElementById('feedback');
     const isCorrect = (selected === currentHerb.name);
+    if (isCorrect) {
+        score++;
+        // Tự động đọc đầy đủ thông tin
+        const speech = new SpeechSynthesisUtterance();
+        speech.text = `Chính xác! Đây là ${currentHerb.name}. Bộ phận dùng: ${currentHerb.part}. Công dụng: ${currentHerb.use}`;
+        speech.lang = 'vi-VN';
+        window.speechSynthesis.speak(speech);
+    }
     
-    if (isCorrect) score++;
-    
+    const fb = document.getElementById('feedback');
     fb.className = isCorrect ? 'card correct' : 'card incorrect';
-    fb.classList.remove('hidden'); // Hiển thị khung phản hồi
+    fb.classList.remove('hidden');
     
     fb.innerHTML = `<strong>${isCorrect ? 'Chính xác!' : (selected === null ? 'Hết giờ!' : 'Sai rồi!')}</strong><br>
                     Điểm: ${score}/${totalQuestions}<br>
-                    Tên: ${currentHerb.name}<br>Bộ phận: ${currentHerb.part}<br>Công dụng: ${currentHerb.use}
+                    Tên: ${currentHerb.name}<br>Bộ phận dùng: ${currentHerb.part}<br>Công dụng: ${currentHerb.use}
                     <br><button onclick="nextQuestion()">Tiếp theo</button>`;
 }
 
-// Chạy câu hỏi đầu tiên khi tải trang
 nextQuestion();
