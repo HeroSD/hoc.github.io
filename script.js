@@ -5,6 +5,13 @@ let timeLeft;
 let timerInterval;
 let gameMode = 'quiz';
 
+// Hàm bỏ dấu tiếng Việt để so sánh chuỗi linh hoạt
+function normalizeString(str) {
+    return str.toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/\s+/g, '');
+}
+
 function startGame(mode) {
     gameMode = mode;
     document.getElementById('menu').classList.add('hidden');
@@ -14,25 +21,15 @@ function startGame(mode) {
 
 function startTimer() {
     clearInterval(timerInterval);
-    
-    // Nếu là chế độ điền chữ (fill), thời gian là 20s, nếu là trắc nghiệm (quiz) thì 10s
-    timeLeft = (gameMode === 'fill') ? 30 : 10; 
-    
-    const timerDisplay = document.getElementById('timer');
-    timerDisplay.innerText = `Thời gian: ${timeLeft}s`;
+    timeLeft = (gameMode === 'fill') ? 20 : 10; // 20s cho điền chữ, 10s cho trắc nghiệm
+    document.getElementById('timer').innerText = `Thời gian: ${timeLeft}s`;
     
     timerInterval = setInterval(() => {
         timeLeft--;
-        timerDisplay.innerText = `Thời gian: ${timeLeft}s`;
-        
+        document.getElementById('timer').innerText = `Thời gian: ${timeLeft}s`;
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
-            // Tự động kiểm tra đáp án khi hết giờ
-            if (gameMode === 'quiz') {
-                checkAnswer(null); // Trắc nghiệm: truyền null để báo sai
-            } else {
-                checkInput(); // Điền chữ: gọi hàm kiểm tra ô input
-            }
+            gameMode === 'fill' ? checkInput() : checkAnswer(null);
         }
     }, 1000);
 }
@@ -50,7 +47,9 @@ function nextQuestion() {
     } else {
         document.getElementById('quiz-options').classList.add('hidden');
         document.getElementById('fill-options').classList.remove('hidden');
-        document.getElementById('answer-input').value = "";
+        const inputField = document.getElementById('answer-input');
+        inputField.value = "";
+        inputField.focus(); // Tự động chọn ô input trên máy tính
     }
 }
 
@@ -72,24 +71,35 @@ function renderQuiz() {
 }
 
 function checkInput() {
-    const input = document.getElementById('answer-input').value.trim();
-    checkAnswer(input);
+    const input = document.getElementById('answer-input').value;
+    const isCorrect = normalizeString(input) === normalizeString(currentHerb.name);
+    // Ẩn bàn phím ảo trên điện thoại sau khi kiểm tra
+    document.getElementById('answer-input').blur(); 
+    checkAnswer(isCorrect ? currentHerb.name : input);
 }
 
 function checkAnswer(selected) {
     clearInterval(timerInterval);
     totalQuestions++;
     const isCorrect = selected !== null && selected.toLowerCase() === currentHerb.name.toLowerCase();
+    
     if (isCorrect) {
         score++;
         const speech = new SpeechSynthesisUtterance(`Chính xác! Đây là ${currentHerb.name}. Bộ phận dùng: ${currentHerb.part}. Công dụng: ${currentHerb.use}`);
         speech.lang = 'vi-VN';
         window.speechSynthesis.speak(speech);
     }
+    
     const fb = document.getElementById('feedback');
     fb.className = isCorrect ? 'card correct' : 'card incorrect';
+    fb.classList.remove('hidden');
     fb.innerHTML = `<strong>${isCorrect ? 'Chính xác!' : 'Sai rồi!'}</strong><br>
                     Điểm: ${score}/${totalQuestions}<br>Tên: ${currentHerb.name}<br>
                     Bộ phận: ${currentHerb.part}<br>Công dụng: ${currentHerb.use}
                     <br><button onclick="nextQuestion()">Tiếp theo</button>`;
 }
+
+// Hỗ trợ phím Enter cho máy tính
+document.getElementById('answer-input').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') checkInput();
+});
