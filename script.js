@@ -103,3 +103,23 @@ function checkAnswer(selected) {
 document.getElementById('answer-input').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') checkInput();
 });
+
+// Xử lý sự kiện phóng to ảnh
+const herbImg = document.getElementById('herb-image');
+
+herbImg.addEventListener('click', function() {
+    // Tạo một lớp phủ (overlay) để hiển thị ảnh to
+    const overlay = document.createElement('div');
+    overlay.className = 'zoomed';
+    
+    const largeImg = document.createElement('img');
+    largeImg.src = this.src;
+    
+    overlay.appendChild(largeImg);
+    document.body.appendChild(overlay);
+    
+    // Nhấn vào bất cứ đâu trên màn hình để đóng phóng to
+    overlay.addEventListener('click', function() {
+        this.remove();
+    });
+});
