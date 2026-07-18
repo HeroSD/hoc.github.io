@@ -9,3 +9,29 @@ button:hover { background: #dcdde1; }
 .correct { background: #d4edda; border-left: 6px solid var(--success); }
 .incorrect { background: #f8d7da; border-left: 6px solid var(--danger); }
 .hidden { display: none; }
+
+/* Thiết kế cho màn hình nhỏ (Điện thoại) */
+.card { 
+    width: 90%; /* Chiếm 90% chiều rộng màn hình */
+    max-width: 400px; /* Nhưng không quá 400px */
+    padding: 20px; 
+}
+
+#options-grid { 
+    display: grid; 
+    grid-template-columns: 1fr; /* Mặc định 1 cột trên điện thoại để dễ bấm bằng ngón tay */
+    gap: 10px; 
+}
+
+/* Thiết kế cho màn hình lớn hơn (Máy tính/Tablet) */
+@media (min-width: 600px) {
+    #options-grid { 
+        grid-template-columns: 1fr 1fr; /* Tự động chuyển sang 2 cột */
+    }
+}
+
+#herb-image {
+    width: 100%;
+    height: auto; /* Tự động co giãn theo chiều rộng */
+    max-height: 250px;
+}
