@@ -32,12 +32,24 @@ function nextQuestion() {
     });
 }
 
+let score = 0; // Biến lưu điểm
+let totalQuestions = 0; // Biến lưu tổng số câu đã làm
+
+nextQuestion();
+
 function checkAnswer(selected) {
+    totalQuestions++; // Tăng tổng số câu
     const fb = document.getElementById('feedback');
-    fb.className = (selected === currentHerb.name) ? 'card correct' : 'card incorrect';
-    fb.classList.remove('card'); // Class đã dùng trên thẻ chứa
-    fb.innerHTML = `<strong>${selected === currentHerb.name ? 'Chính xác!' : 'Sai rồi!'}</strong><br>
+    const isCorrect = (selected === currentHerb.name);
+    
+    if (isCorrect) {
+        score++; // Tăng điểm nếu đúng
+    }
+    
+    fb.className = isCorrect ? 'card correct' : 'card incorrect';
+    fb.classList.remove('card');
+    fb.innerHTML = `<strong>${isCorrect ? 'Chính xác!' : 'Sai rồi!'}</strong><br>
+                    Điểm số: ${score}/${totalQuestions}<br>
                     Tên: ${currentHerb.name}<br>Bộ phận: ${currentHerb.part}<br>Công dụng: ${currentHerb.use}
                     <br><button onclick="nextQuestion()">Tiếp theo</button>`;
 }
-nextQuestion();
