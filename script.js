@@ -16,7 +16,7 @@ function startTimer() {
     clearInterval(timerInterval);
     
     // Nếu là chế độ điền chữ (fill), thời gian là 20s, nếu là trắc nghiệm (quiz) thì 10s
-    timeLeft = (gameMode === 'fill') ? 20 : 10; 
+    timeLeft = (gameMode === 'fill') ? 30 : 10; 
     
     const timerDisplay = document.getElementById('timer');
     timerDisplay.innerText = `Thời gian: ${timeLeft}s`;
