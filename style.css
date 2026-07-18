@@ -1,0 +1,11 @@
+:root { --success: #27ae60; --danger: #e74c3c; }
+body { font-family: 'Segoe UI', sans-serif; background: #eef2f3; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+.card { background: white; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); padding: 30px; width: 400px; text-align: center; }
+#herb-image { width: 100%; height: 280px; object-fit: cover; border-radius: 20px; }
+#options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+button { padding: 15px; border: none; border-radius: 12px; background: #f0f0f0; cursor: pointer; font-size: 14px; transition: 0.3s; }
+button:hover { background: #dcdde1; }
+#feedback { margin-top: 20px; padding: 15px; border-radius: 15px; text-align: left; }
+.correct { background: #d4edda; border-left: 6px solid var(--success); }
+.incorrect { background: #f8d7da; border-left: 6px solid var(--danger); }
+.hidden { display: none; }
