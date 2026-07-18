@@ -21,7 +21,7 @@ function startGame(mode) {
 
 function startTimer() {
     clearInterval(timerInterval);
-    timeLeft = (gameMode === 'fill') ? 20 : 10; // 20s cho điền chữ, 10s cho trắc nghiệm
+    timeLeft = (gameMode === 'fill') ? 30 : 10; // 20s cho điền chữ, 10s cho trắc nghiệm
     document.getElementById('timer').innerText = `Thời gian: ${timeLeft}s`;
     
     timerInterval = setInterval(() => {
@@ -85,7 +85,15 @@ function checkAnswer(selected) {
     
     if (isCorrect) {
         score++;
-        const speech = new SpeechSynthesisUtterance(`Chính xác! Đây là ${currentHerb.name}. Bộ phận dùng: ${currentHerb.part}. Công dụng: ${currentHerb.use}`);
+        // Đọc thông tin theo đúng thứ tự thuộc tính mới
+        const speech = new SpeechSynthesisUtterance(
+            `Chính xác! Đây là ${currentHerb.name}. 
+            Bộ phận dùng: ${currentHerb.part}. 
+            Tính: ${currentHerb.temp}. 
+            Vị: ${currentHerb.property}. 
+            Quy kinh: ${currentHerb.meridians}. 
+            Công dụng: ${currentHerb.use}.`
+        );
         speech.lang = 'vi-VN';
         window.speechSynthesis.speak(speech);
     }
@@ -93,9 +101,16 @@ function checkAnswer(selected) {
     const fb = document.getElementById('feedback');
     fb.className = isCorrect ? 'card correct' : 'card incorrect';
     fb.classList.remove('hidden');
+    
+    // Hiển thị giao diện theo đúng thứ tự
     fb.innerHTML = `<strong>${isCorrect ? 'Chính xác!' : 'Sai rồi!'}</strong><br>
-                    Điểm: ${score}/${totalQuestions}<br>Tên: ${currentHerb.name}<br>
-                    Bộ phận: ${currentHerb.part}<br>Công dụng: ${currentHerb.use}
+                    Điểm: ${score}/${totalQuestions}<br>
+                    <strong>Tên:</strong> ${currentHerb.name}<br>
+                    <strong>Bộ phận:</strong> ${currentHerb.part}<br>
+                    <strong>Tính:</strong> ${currentHerb.temp}<br>
+                    <strong>Vị:</strong> ${currentHerb.property}<br>
+                    <strong>Quy kinh:</strong> ${currentHerb.meridians}<br>
+                    <strong>Công dụng:</strong> ${currentHerb.use}
                     <br><button onclick="nextQuestion()">Tiếp theo</button>`;
 }
 
